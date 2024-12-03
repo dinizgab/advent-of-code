@@ -78,8 +78,11 @@ defmodule Day2Part2 do
     |> Enum.all?(fn [a, b] -> a > b end)
   end
 
-  def removedOne(list) do
-    for x <- list, do: List.delete(list, x)
+  # Return a list of all possible rows made 
+  # with just one element from the original row removed
+  def removed_one(list) do
+    Enum.with_index(list)
+    |> Enum.map(fn {_value, i} -> List.delete_at(list, i) end)
   end
 
   def run do
@@ -91,12 +94,27 @@ defmodule Day2Part2 do
       |> Enum.map(&String.split(&1, " "))
       |> Enum.map(fn row -> Enum.map(row, &String.to_integer/1) end)
 
-    IO.puts(ascending([1, 2, 3, 4, 5]))
-    IO.puts(ascending([1, 2, 2, 4, 5]))
-    IO.inspect(removedOne([1, 2, 3, 4, 5]))
-    IO.puts(ascending([1]))
+    valid_rows =
+      Enum.filter(input, fn row ->
+        removed_rows = removed_one(row)
+
+        valid_removed_row =
+          removed_rows
+          |> Enum.find_index(fn rem_row -> (ascending(rem_row) || descending(rem_row)) && Day2.calculate_distance(rem_row) end)
+          |> case do
+            nil -> nil
+            index -> Enum.at(removed_rows, index)
+          end
+
+        (ascending(row) || Day2.descending(row) || (valid_removed_row && (ascending(valid_removed_row) || descending(valid_removed_row)))) &&
+        (Day2.calculate_distance(row) || (valid_removed_row && Day2.calculate_distance(valid_removed_row)))
+      end)
+
+    total_count = Enum.count(valid_rows)
+
+    IO.puts("Total count: #{total_count}")
   end
 end
 
-Day2.run()
+# Day2.run()
 Day2Part2.run()
