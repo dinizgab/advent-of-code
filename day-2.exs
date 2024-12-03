@@ -61,9 +61,7 @@ defmodule Day2 do
     least_distant_rows = Enum.filter(asc_and_desc_rows, fn row -> calculate_distance(row) end)
     total_rows = Enum.count(least_distant_rows)
 
-    IO.inspect(asc_and_desc_rows)
-    IO.inspect(least_distant_rows)
-    IO.puts(total_rows)
+    IO.puts("Total count - Part 1: #{total_rows}")
   end
 end
 
@@ -106,15 +104,13 @@ defmodule Day2Part2 do
             index -> Enum.at(removed_rows, index)
           end
 
-        (ascending(row) || Day2.descending(row) || (valid_removed_row && (ascending(valid_removed_row) || descending(valid_removed_row)))) &&
-        (Day2.calculate_distance(row) || (valid_removed_row && Day2.calculate_distance(valid_removed_row)))
+        ((ascending(row) || descending(row)) && Day2.calculate_distance(row)) || valid_removed_row
       end)
 
     total_count = Enum.count(valid_rows)
-
-    IO.puts("Total count: #{total_count}")
+    IO.puts("Total count - Part 2: #{total_count}")
   end
 end
 
-# Day2.run()
+Day2.run()
 Day2Part2.run()
