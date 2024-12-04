@@ -14,6 +14,8 @@ defmodule Day4 do
       acc +
         check_path(coordenate_map, String.graphemes(word), coordenate, 0, 1) +
         check_path(coordenate_map, String.graphemes(word), coordenate, 0, -1)
+    # TODO - Check vertical (up and down)
+    # TODO - Check diagonal (up and down)
     end)
   end
 
