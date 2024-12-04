@@ -9,13 +9,22 @@ defmodule Day4 do
   def is_valid_path?(coordenate_map, word) do
     first_letter = String.first(word)
     starting_coordenates = coordenate_map[first_letter]
+    letters = String.graphemes(word)
 
     Enum.reduce(starting_coordenates, 0, fn coordenate, acc ->
+      # Horizontal
+      # Vertical
+      # Diagonal (right)
+      # Diagonal (left) - backwards words
       acc +
-        check_path(coordenate_map, String.graphemes(word), coordenate, 0, 1) +
-        check_path(coordenate_map, String.graphemes(word), coordenate, 0, -1)
-    # TODO - Check vertical (up and down)
-    # TODO - Check diagonal (up and down)
+        check_path(coordenate_map, letters, coordenate, 0, 1) +
+        check_path(coordenate_map, letters, coordenate, 0, -1) +
+        check_path(coordenate_map, letters, coordenate, 1, 0) +
+        check_path(coordenate_map, letters, coordenate, -1, 0) +
+        check_path(coordenate_map, letters, coordenate, 1, -1) +
+        check_path(coordenate_map, letters, coordenate, 1, 1) +
+        check_path(coordenate_map, letters, coordenate, -1, -1) +
+        check_path(coordenate_map, letters, coordenate, -1, 1)
     end)
   end
 
@@ -40,18 +49,24 @@ defmodule Day4 do
   end
 
   def run do
-    input = [
-      [".", "S", "A", "M", "X", "X", "M", "A", "S", "."]
-      # [".", "S", "A", "M", "X", "M", "S", ".", ".", "."],
-      # [".", ".", ".", "S", ".", ".", "A", ".", ".", "."],
-      # [".", ".", "A", ".", "A", ".", "M", "S", ".", "X"],
-      # ["X", "M", "A", "S", "A", "M", "X", ".", "M", "M"],
-      # ["X", ".", ".", ".", ".", ".", "X", "A", ".", "A"],
-      # ["S", ".", "S", ".", "S", ".", "S", ".", "S", "S"],
-      # [".", "A", ".", "A", ".", "A", ".", "A", ".", "A"],
-      # [".", ".", "M", ".", "M", ".", "M", ".", "M", "M"],
-      # [".", "X", ".", "X", ".", "X", "M", "A", "S", "X"]
-    ]
+    input =
+      File.stream!("inputs/day-4.txt")
+      |> Enum.map(&String.graphemes(&1))
+
+    IO.inspect(input)
+
+    # [
+    #  [".", "S", "A", "M", "X", "X", "M", "A", "S", "."],
+    #  [".", "S", "A", "M", "X", "M", "S", ".", ".", "."],
+    #  [".", ".", ".", "S", ".", ".", "A", ".", ".", "."],
+    #  [".", ".", "A", ".", "A", ".", "M", "S", ".", "X"],
+    #  ["X", "M", "A", "S", "A", "M", "X", ".", "M", "M"],
+    #  ["X", ".", ".", ".", ".", ".", "X", "A", ".", "A"],
+    #  ["S", ".", "S", ".", "S", ".", "S", ".", "S", "S"],
+    #  [".", "A", ".", "A", ".", "A", ".", "A", ".", "A"],
+    #  [".", ".", "M", ".", "M", ".", "M", ".", "M", "M"],
+    #  [".", "X", ".", "X", ".", "X", "M", "A", "S", "X"]
+    # ]
 
     coordenate_map =
       for letter <- ["X", "M", "A", "S"], into: %{}, do: {letter, get_coordenates(input, letter)}
