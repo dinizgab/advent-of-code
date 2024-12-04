@@ -11,9 +11,9 @@ defmodule Day4 do
     starting_coordenates = coordenate_map[first_letter]
 
     Enum.reduce(starting_coordenates, 0, fn coordenate, acc ->
-      # ||
       acc +
-        check_path(coordenate_map, String.graphemes(word), coordenate, 0, 1) + check_path(coordenate_map, String.graphemes(word), coordenate, 0, -1)
+        check_path(coordenate_map, String.graphemes(word), coordenate, 0, 1) +
+        check_path(coordenate_map, String.graphemes(word), coordenate, 0, -1)
     end)
   end
 
